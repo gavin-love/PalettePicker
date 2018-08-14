@@ -1,9 +1,45 @@
-.tittle {
-  color: blanchedalmond;
+header {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.title, .instructions {
+  color: darksalmon;
+}
+
+.palette_container {
+  display: flex;
 }
 
 article {
-  height: 300px;
+  height: 400px;
   width: 300px;
-  border: 5px solid paleturquoise;
+}
+
+.palette_1 {
+  background-color: burlywood;
+}
+.palette_2 {
+  background-color: wheat;
+}
+.palette_3 {
+  background-color: bisque;
+}
+.palette_4 {
+  background-color: burlywood;
+}
+.palette_5 {
+  background-color: blanchedalmond;
+}
+
+.projects_container {
+  height: 200px;
+}
+
+footer, .save_palette_form, .save_project_form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

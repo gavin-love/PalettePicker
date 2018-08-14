@@ -12,16 +12,28 @@
 <body>
   <header>
     <h1 class="title">Palette Picker</h1>
+    <h3 class="instructions">Press space bar to generate color schemes</h3>
   </header>
   <section class="palette_container">
-    <article class="palette_1"></article>
-    <article class="palette_2"></article>
+    <article class="palette_1">#deb887</article>
+    <article class="palette_2">#f5deb3</article>
     <article class="palette_3"></article>
     <article class="palette_4"></article>
     <article class="palette_5"></article>
   </section>
+  <form class="save_palette_form">
+    <select>
+    </select>
+    <input type="text" class="input_value" />
+    <button class="save_palette_button">Save Palette</button>
+  </form>
+  <form class="save_project_form">
+    <input type="text" placeholder="New project name" />
+    <button class="save_project_button">Save Project</button>
+  </form>
+  <section class="projects_container">
+  </section>
   <footer>
-    <p>Press space bar to generate color schemes</p>
   </footer>
 </body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
