@@ -5,8 +5,11 @@ const generateColorPalette = e => {
 
     for (let i = 0; i <= 4; i++) {
       const color = randomColor()
-      $(`.palette_${i + 1}`).css("background-color", color);
-      $(`.palette_${i + 1}`).html(color);
+
+      if (!$(`.palette_${i + 1}`).hasClass('isLocked')) {
+        $(`.palette_${i + 1}`).css("background-color", color);
+        $(`.palette_${i + 1}`).html(color);
+      }
     }
     $('section article').addClass('hexcode_style');
   }
@@ -34,12 +37,19 @@ const saveNewProject = e => {
   e.preventDefault();
 
   let projectName = $(e.target).children('input').val()
-  console.log(projectName)
   $('select').append(`<option value="${projectName}">${projectName}</option>`)
+}
+
+const lockColorSwatch = e => {
+  e.preventDefault();
+
+  let article = $(e.target).closest('article');
+  article.toggleClass('isLocked');
 }
 
 $(window).on('keypress', generateColorPalette);
 $('.save_palette_form').on('submit', saveColorPalette);
-$('.save_project_form').on('submit', saveNewProject)
+$('.save_project_form').on('submit', saveNewProject);
+$('.lock_button').on('click', lockColorSwatch);
 
 
