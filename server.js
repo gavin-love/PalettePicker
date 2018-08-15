@@ -6,18 +6,17 @@ const environment = process.env.NODE_ENV || 'development';
 const configuration = require('./knexfile')[environment];
 const database = require('knex')(configuration);
 
-app.set('port', process.env.PORT || 3000);
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true}));
 app.use(express.static('public'));
 
-app.get('/', (request, response) => {
-
-});
+app.set('port', process.env.PORT || 3000);
 
 app.post('/api/v1/projects', (request, response) => {
   const project = request.body;
 
-  for (let requiredParameter of 'title') {
+  for (let requiredParameter of ['title']) {
+    console.log(project);
     if (!project[requiredParameter]) {
       return response.status(422).send({
         error: `Expected format: {title: <string>}. You're missing a "${requiredParameter}" property.`
@@ -25,32 +24,53 @@ app.post('/api/v1/projects', (request, response) => {
     }
 
     database('projects').insert(project, 'id')
-      .then(project => response.status(200).json({ id: project[0] }))
-      .catch(error => response.status(500).json({ error }))
+      .then(project => {
+        return response.status(200).json({ id: project[0] })
+      })
+      .catch(error => {
+        return response.status(500).json({ error })
+      })
   }
 })
 
 app.post('/api/v1/palette', (request, response) => {
   const palette = request.body;
 
-  for (let requiredParameter of 'title') {
+  for (let requiredParameter of ['title', 'color_one', 'color_two', 'color_three', 'color_four', 'color_five']) {
     if (!palette[requiredParameter]) {
       return response.status(422).send({
-        error: `Expected format: {title: <string>}. You're missing a "${requiredParameter}" property.`
+        error: `Expected format: {title: <string>, color_one: <string>, color_two: <string>, color_three: <string>, color_four: <string>, color_five: <string>}. You're missing a "${requiredParameter}" property.`
       });
     }
 
     database('palette').insert(palette, 'id')
-      .then(palette => response.status(200).json({ id: palette[0] }))
-      .catch(error => response.status(500).json({ error }))
+      .then(palette => {
+        return response.status(200).json({ id: palette[0] })
+      })
+      .catch(error => {
+        return response.status(500).json({ error })
+      })
   }
 })
 
+app.get('/api/v1/projects', (request, response) => {
+  database('projects').select()
+    .then((projects) => {
+      return response.status(200).json(projects);
+    })
+    .catch((error) => {
+      return response.status(500).json({ error });
+    });
+});
 
-
-
-app.get('/json', (request, response) => {
-  response.status(200).json();
+app.get('/api/v1/palette', (request, response) => {
+  database('palette').select()
+    .then((palette) => {
+      return response.status(200).json(palette);
+    })
+    .catch((error) => {
+      return response.status(500).json({ error });
+    });
 });
 
 app.listen(app.get('port'), () => {
