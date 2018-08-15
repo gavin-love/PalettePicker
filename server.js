@@ -18,14 +18,14 @@ app.post('/api/v1/projects', (request, response) => {
   for (let requiredParameter of ['title']) {
     console.log(project);
     if (!project[requiredParameter]) {
-      return response.status(422).send({
+      return response.status(422).json({
         error: `Expected format: {title: <string>}. You're missing a "${requiredParameter}" property.`
       });
     }
 
     database('projects').insert(project, 'id')
       .then(project => {
-        return response.status(200).json({ id: project[0] })
+        return response.status(201).json({ id: project[0] })
       })
       .catch(error => {
         return response.status(500).json({ error })
@@ -38,14 +38,14 @@ app.post('/api/v1/palette', (request, response) => {
 
   for (let requiredParameter of ['title', 'color_one', 'color_two', 'color_three', 'color_four', 'color_five']) {
     if (!palette[requiredParameter]) {
-      return response.status(422).send({
+      return response.status(422).json({
         error: `Expected format: {title: <string>, color_one: <string>, color_two: <string>, color_three: <string>, color_four: <string>, color_five: <string>}. You're missing a "${requiredParameter}" property.`
       });
     }
 
     database('palette').insert(palette, 'id')
       .then(palette => {
-        return response.status(200).json({ id: palette[0] })
+        return response.status(201).json({ id: palette[0] })
       })
       .catch(error => {
         return response.status(500).json({ error })
@@ -56,7 +56,7 @@ app.post('/api/v1/palette', (request, response) => {
 app.get('/api/v1/projects', (request, response) => {
   database('projects').select()
     .then((projects) => {
-      return response.status(200).json(projects);
+      return response.status(201).json(projects);
     })
     .catch((error) => {
       return response.status(500).json({ error });
@@ -66,7 +66,7 @@ app.get('/api/v1/projects', (request, response) => {
 app.get('/api/v1/palette', (request, response) => {
   database('palette').select()
     .then((palette) => {
-      return response.status(200).json(palette);
+      return response.status(201).json(palette);
     })
     .catch((error) => {
       return response.status(500).json({ error });
