@@ -8,7 +8,7 @@ const generateColorPalette = e => {
 
       if (!$(`.palette_${i + 1}`).hasClass('isLocked')) {
         $(`.palette_${i + 1}`).css("background-color", color);
-        $(`.palette_${i + 1}`).html(color);
+        // $(`.palette_${i + 1}`).text(color);
       }
     }
     $('section article').addClass('hexcode_style');
