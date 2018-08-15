@@ -8,10 +8,9 @@ const generateColorPalette = e => {
 
       if (!$(`.palette_${i + 1}`).hasClass('isLocked')) {
         $(`.palette_${i + 1}`).css("background-color", color);
-        // $(`.palette_${i + 1}`).text(color);
+        $(`.palette_${i + 1}`).children('p').text(color);
       }
     }
-    $('section article').addClass('hexcode_style');
   }
 }
 
@@ -45,6 +44,7 @@ const lockColorSwatch = e => {
 
   let article = $(e.target).closest('article');
   article.toggleClass('isLocked');
+  $(e.target).toggleClass('toggleButtonStyle');
 }
 
 $(window).on('keypress', generateColorPalette);

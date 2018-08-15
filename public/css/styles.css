@@ -38,6 +38,10 @@ article {
   height: 200px;
 }
 
+.toggleButtonStyle {
+  color: red;
+}
+
 footer, .save_palette_form, .save_project_form {
   display: flex;
   justify-content: center;
