@@ -15,28 +15,74 @@ const generateColorPalette = e => {
 }
 
 const getHexCode = () => {
-  hexCodes = [];
-  $('.palette_container article').each((index, palette) => {
-    hexCodes.push(palette.innerText);
+  let hexCodes = [];
+  $('article p').each((index, article) => {
+    hexCodes.push(article.innerText);
   })
   return hexCodes;
 }
 
-const saveColorPalette = e => {
+const projectPost = (data) => {
+  const url = 'http://localhost:3000/api/v1/projects';
+
+  fetch(url, {
+    method: 'POST',
+    body: JSON.stringify(data),
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+    .then(res => res.json())
+    .catch(error => console.error('Error:', error))
+}
+
+const projectGet = async (projectName) => {
+  const url = `http://localhost:3000/api/v1/project/${projectName}`;
+
+  try {
+    const response = await fetch(url)
+    const data = await response.json();
+    return data
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+const postPalette = (data) => {
+  const url = 'http://localhost:3000/api/v1/palettes';
+
+  fetch(url, {
+    method: 'POST',
+    body: JSON.stringify(data),
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+    .then(res => res.json())
+    .catch(error => console.error('Error:', error))
+}
+
+const saveColorPalette = async (e) => {
   e.preventDefault();
+  const projectName = await $(e.target).children('select').val();
+  const project = await projectGet(projectName);
+  const id = project[0].id
+  console.log(project[0].id)
 
-  let project = $(e.target).children('select').val()
-  let paletteName = $(e.target).children('input').val()
-  let paletteColors = getHexCode();
+  const paletteName = $(e.target).children('input').val();
+  const paletteColors = getHexCode();
+  const data = { title: paletteName, color_one: paletteColors[0], color_two: paletteColors[1], color_three: paletteColors[2], color_four: paletteColors[3], color_five: paletteColors[4], project_id: id }
 
-  console.log(project, paletteName, paletteColors);
+  postPalette(data)
 }
 
 const saveNewProject = e => {
   e.preventDefault();
+  const projectName = $(e.target).children('input').val();
+  const data = { title: projectName };
 
-  let projectName = $(e.target).children('input').val()
-  $('select').append(`<option value="${projectName}">${projectName}</option>`)
+  $('select').append(`<option value="${projectName}">${projectName}</option>`);
+  projectPost(data)
 }
 
 const lockColorSwatch = e => {

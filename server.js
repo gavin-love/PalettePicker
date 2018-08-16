@@ -7,7 +7,7 @@ const configuration = require('./knexfile')[environment];
 const database = require('knex')(configuration);
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
 app.set('port', process.env.PORT || 3000);
@@ -33,7 +33,7 @@ app.post('/api/v1/projects', (request, response) => {
   }
 })
 
-app.post('/api/v1/palette', (request, response) => {
+app.post('/api/v1/palettes', (request, response) => {
   const palette = request.body;
 
   for (let requiredParameter of ['title', 'color_one', 'color_two', 'color_three', 'color_four', 'color_five']) {
@@ -53,8 +53,8 @@ app.post('/api/v1/palette', (request, response) => {
   }
 })
 
-app.get('/api/v1/projects', (request, response) => {
-  database('projects').select()
+app.get('/api/v1/project/:projectName', (request, response) => {
+  database('projects').where('title', request.params.projectName).select()
     .then((projects) => {
       return response.status(201).json(projects);
     })
