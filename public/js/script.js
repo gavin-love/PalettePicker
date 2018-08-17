@@ -22,21 +22,25 @@ const getHexCode = () => {
   return hexCodes;
 }
 
-const projectPost = (data) => {
+const projectPost = async (data) => {
   const url = 'http://localhost:3000/api/v1/projects';
 
-  fetch(url, {
-    method: 'POST',
-    body: JSON.stringify(data),
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  })
-    .then(res => res.json())
-    .catch(error => console.error('Error:', error))
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      body: JSON.stringify(data),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    const retrievedData = response.json();
+    return retrievedData;
+  } catch (error) {
+    console.log(error)
+  }
 }
 
-const projectGet = async (projectName) => {
+const projectGetByName = async (projectName) => {
   const url = `http://localhost:3000/api/v1/project/${projectName}`;
 
   try {
@@ -48,32 +52,36 @@ const projectGet = async (projectName) => {
   }
 }
 
-const postPalette = (data) => {
+const palettePost = async (data) => {
   const url = 'http://localhost:3000/api/v1/palettes';
 
-  fetch(url, {
-    method: 'POST',
-    body: JSON.stringify(data),
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  })
-    .then(res => res.json())
-    .catch(error => console.error('Error:', error))
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      body: JSON.stringify(data),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+
+    const retrievedData = response.json()
+    return retrievedData
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 const saveColorPalette = async (e) => {
   e.preventDefault();
   const projectName = await $(e.target).children('select').val();
-  const project = await projectGet(projectName);
+  const project = await projectGetByName(projectName);
   const id = project[0].id
-  console.log(project[0].id)
 
   const paletteName = $(e.target).children('input').val();
   const paletteColors = getHexCode();
   const data = { title: paletteName, color_one: paletteColors[0], color_two: paletteColors[1], color_three: paletteColors[2], color_four: paletteColors[3], color_five: paletteColors[4], project_id: id }
 
-  postPalette(data)
+  palettePost(data)
 }
 
 const saveNewProject = e => {
