@@ -40,19 +40,7 @@ const projectPost = async (data) => {
   }
 }
 
-const projectGetByName = async (projectName) => {
-  const url = `http://localhost:3000/api/v1/project/${projectName}`;
-
-  try {
-    const response = await fetch(url)
-    const data = await response.json();
-    return data
-  } catch (error) {
-    console.log(error)
-  }
-}
-
-const palettePost = async (data) => {
+const palettesPost = async (data) => {
   const url = 'http://localhost:3000/api/v1/palettes';
 
   try {
@@ -71,6 +59,43 @@ const palettePost = async (data) => {
   }
 }
 
+const projectsGetAll = async () => {
+  const url = 'http://localhost:3000/api/v1/projects';
+
+  try {
+    const response = await fetch(url)
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+const projectGetByName = async (projectName) => {
+  const url = `http://localhost:3000/api/v1/projects/${projectName}`;
+
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    return data
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+const paletteGetByProjectId = async (projectId) => {
+  const url = `http://localhost:3000/api/v1/palettes/${projectId}`;
+
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    return data
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+
 const saveColorPalette = async (e) => {
   e.preventDefault();
 
@@ -82,7 +107,7 @@ const saveColorPalette = async (e) => {
   const paletteColors = getHexCode();
   const data = { title: paletteName, color_one: paletteColors[0], color_two: paletteColors[1], color_three: paletteColors[2], color_four: paletteColors[3], color_five: paletteColors[4], project_id: id }
 
-  palettePost(data);
+  palettesPost(data);
 }
 
 const saveNewProject = e => {
@@ -102,9 +127,30 @@ const lockColorSwatch = e => {
   $(e.target).toggleClass('toggleButtonStyle');
 }
 
+const displayProjectsWithPalettes = data => {
+  console.log(data);
+}
+
+const retrieveProjectsWithPalettes = async () => {
+  const projects = await projectsGetAll();
+  const palettes = projects.map(async (project) => {
+    const data = await paletteGetByProjectId(project.id);
+
+    const projectsWithPalettes = {
+      title: project.title,
+      id: project.id,
+      palettes: data
+    }
+    return projectsWithPalettes
+  })
+  const response = await Promise.all(palettes);
+  displayProjectsWithPalettes(response);
+}
+
 $(window).on('keypress', generateColorPalette);
 $('.save_palette_form').on('submit', saveColorPalette);
 $('.save_project_form').on('submit', saveNewProject);
 $('.lock_button').on('click', lockColorSwatch);
+$(window).ready(retrieveProjectsWithPalettes());
 
 

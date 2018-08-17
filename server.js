@@ -9,7 +9,6 @@ const database = require('knex')(configuration);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
-
 app.set('port', process.env.PORT || 3000);
 
 app.post('/api/v1/projects', (request, response) => {
@@ -52,22 +51,32 @@ app.post('/api/v1/palettes', (request, response) => {
   }
 })
 
-app.get('/api/v1/project/:projectName', (request, response) => {
+app.get('/api/v1/projects/:projectName', (request, response) => {
   database('projects').where('title', request.params.projectName).select()
-    .then((projects) => {
-      return response.status(201).json(projects);
+    .then(projects => {
+      return response.status(200).json(projects);
     })
-    .catch((error) => {
+    .catch(error => {
       return response.status(500).json({ error });
     });
 });
 
-app.get('/api/v1/palette', (request, response) => {
-  database('palette').select()
-    .then((palette) => {
-      return response.status(201).json(palette);
+app.get('/api/v1/projects', (request, response) => {
+  database('projects').select()
+    .then(projects => {
+      return response.status(200).json(projects);
     })
-    .catch((error) => {
+    .catch(error => {
+      return response.status(500).json({ error });
+    })
+})
+
+app.get('/api/v1/palettes/:projectId', (request, response) => {
+  database('palette').where('project_id', request.params.projectId).select()
+    .then(projects => {
+      return response.status(200).json(projects);
+    })
+    .catch(error => {
       return response.status(500).json({ error });
     });
 });
