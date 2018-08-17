@@ -16,7 +16,6 @@ app.post('/api/v1/projects', (request, response) => {
   const project = request.body;
 
   for (let requiredParameter of ['title']) {
-    console.log(project);
     if (!project[requiredParameter]) {
       return response.status(422).json({
         error: `Expected format: {title: <string>}. You're missing a "${requiredParameter}" property.`
@@ -36,7 +35,7 @@ app.post('/api/v1/projects', (request, response) => {
 app.post('/api/v1/palettes', (request, response) => {
   const palette = request.body;
 
-  for (let requiredParameter of ['title', 'color_one', 'color_two', 'color_three', 'color_four', 'color_five']) {
+  for (let requiredParameter of ['color_one']) {
     if (!palette[requiredParameter]) {
       return response.status(422).json({
         error: `Expected format: {title: <string>, color_one: <string>, color_two: <string>, color_three: <string>, color_four: <string>, color_five: <string>}. You're missing a "${requiredParameter}" property.`
