@@ -1,3 +1,4 @@
+
 const generateColorPalette = e => {
   if (e.which === 32) {
 
@@ -23,7 +24,7 @@ const getHexCode = () => {
 }
 
 const projectPost = async (data) => {
-  const url = 'http://localhost:3000/api/v1/projects';
+  const url = '/api/v1/projects';
 
   try {
     const response = await fetch(url, {
@@ -41,7 +42,7 @@ const projectPost = async (data) => {
 }
 
 const palettesPost = async (data) => {
-  const url = 'http://localhost:3000/api/v1/palettes';
+  const url = '/api/v1/palettes';
 
   try {
     const response = await fetch(url, {
@@ -60,7 +61,7 @@ const palettesPost = async (data) => {
 }
 
 const projectsGetAll = async () => {
-  const url = 'http://localhost:3000/api/v1/projects';
+  const url = '/api/v1/projects';
 
   try {
     const response = await fetch(url)
@@ -72,7 +73,7 @@ const projectsGetAll = async () => {
 }
 
 const projectGetByName = async (projectName) => {
-  const url = `http://localhost:3000/api/v1/projects/${projectName}`;
+  const url = `/api/v1/projects/${projectName}`;
 
   try {
     const response = await fetch(url);
@@ -84,7 +85,7 @@ const projectGetByName = async (projectName) => {
 }
 
 const paletteGetByProjectId = async (projectId) => {
-  const url = `http://localhost:3000/api/v1/palettes/${projectId}`;
+  const url = `/api/v1/palettes/${projectId}`;
 
   try {
     const response = await fetch(url);
@@ -107,7 +108,8 @@ const saveColorPalette = async (e) => {
   const paletteColors = getHexCode();
   const data = { title: paletteName, color_one: paletteColors[0], color_two: paletteColors[1], color_three: paletteColors[2], color_four: paletteColors[3], color_five: paletteColors[4], project_id: id }
 
-  palettesPost(data);
+  await palettesPost(data);
+
 }
 
 const saveNewProject = e => {
