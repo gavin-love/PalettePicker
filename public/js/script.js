@@ -33,7 +33,7 @@ const projectPost = async (data) => {
         'Content-Type': 'application/json'
       }
     })
-    const retrievedData = response.json();
+    const retrievedData = await response.json();
     return retrievedData;
   } catch (error) {
     console.log(error)
@@ -64,7 +64,7 @@ const palettePost = async (data) => {
       }
     });
 
-    const retrievedData = response.json()
+    const retrievedData = await response.json()
     return retrievedData
   } catch (error) {
     console.log(error)
@@ -73,7 +73,8 @@ const palettePost = async (data) => {
 
 const saveColorPalette = async (e) => {
   e.preventDefault();
-  const projectName = await $(e.target).children('select').val();
+
+  const projectName = $(e.target).children('select').val();
   const project = await projectGetByName(projectName);
   const id = project[0].id
 
@@ -81,7 +82,7 @@ const saveColorPalette = async (e) => {
   const paletteColors = getHexCode();
   const data = { title: paletteName, color_one: paletteColors[0], color_two: paletteColors[1], color_three: paletteColors[2], color_four: paletteColors[3], color_five: paletteColors[4], project_id: id }
 
-  palettePost(data)
+  palettePost(data);
 }
 
 const saveNewProject = e => {

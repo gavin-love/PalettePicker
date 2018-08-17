@@ -12,27 +12,28 @@ app.use(express.static('public'));
 
 app.set('port', process.env.PORT || 3000);
 
-app.post('/api/v1/projects', async (request, response) => {
+app.post('/api/v1/projects', (request, response) => {
   const project = request.body;
 
   for (let requiredParameter of ['title']) {
+    console.log(project);
     if (!project[requiredParameter]) {
       return response.status(422).json({
         error: `Expected format: {title: <string>}. You're missing a "${requiredParameter}" property.`
       });
     }
 
-    try {
-      const response = await database('projects').insert(project, 'id');
-      const result = await response.status(201).json({ id: project[0] });
-      return result
-    } catch (error) {
-      return response.status(500).json({ error });
-    }
+    database('projects').insert(project, 'id')
+      .then(project => {
+        return response.status(201).json({ id: project[0] })
+      })
+      .catch(error => {
+        return response.status(500).json({ error })
+      })
   }
 })
 
-app.post('/api/v1/palettes', async (request, response) => {
+app.post('/api/v1/palettes', (request, response) => {
   const palette = request.body;
 
   for (let requiredParameter of ['title', 'color_one', 'color_two', 'color_three', 'color_four', 'color_five']) {
@@ -42,37 +43,34 @@ app.post('/api/v1/palettes', async (request, response) => {
       });
     }
 
-    try {
-      const response = await database('palette').insert(palette, 'id');
-      const data = await response.status(201).json({ id: palette[0] });
-      return data;
-    } catch (error) {
-      return response.status(500).json({ error });
-    }
+    database('palette').insert(palette, 'id')
+      .then(palette => {
+        return response.status(201).json({ id: palette[0] })
+      })
+      .catch(error => {
+        return response.status(500).json({ error })
+      })
   }
 })
 
-app.get('/api/v1/project/:projectName', async (request, response) => {
-
-  try {
-    const response = await database('projects')
-      .where('title', request.params.projectName).select();
-    const result = await response.status(201).json(projects);
-    return result
-  } catch (error) {
-    return response.status(500).json({ error });
-  }
+app.get('/api/v1/project/:projectName', (request, response) => {
+  database('projects').where('title', request.params.projectName).select()
+    .then((projects) => {
+      return response.status(201).json(projects);
+    })
+    .catch((error) => {
+      return response.status(500).json({ error });
+    });
 });
 
 app.get('/api/v1/palette', (request, response) => {
-
-  try {
-    const response = await database('palette').select();
-    const data = await response.status(201).json(palette);
-    return data;
-  } catch (error) {
-    return response.status(500).json({ error });
-  }
+  database('palette').select()
+    .then((palette) => {
+      return response.status(201).json(palette);
+    })
+    .catch((error) => {
+      return response.status(500).json({ error });
+    });
 });
 
 app.listen(app.get('port'), () => {
