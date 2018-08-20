@@ -84,8 +84,8 @@ const projectGetByName = async (projectName) => {
   }
 }
 
-const paletteGetByProjectId = async (projectId) => {
-  const url = `/api/v1/palettes/${projectId}`;
+const palettesGetAll = async () => {
+  const url = "/api/v1/palettes";
 
   try {
     const response = await fetch(url);
@@ -95,7 +95,6 @@ const paletteGetByProjectId = async (projectId) => {
     console.log(error)
   }
 }
-
 
 const saveColorPalette = async (e) => {
   e.preventDefault();
@@ -109,7 +108,7 @@ const saveColorPalette = async (e) => {
   const data = { title: paletteName, color_one: paletteColors[0], color_two: paletteColors[1], color_three: paletteColors[2], color_four: paletteColors[3], color_five: paletteColors[4], project_id: id }
 
   await palettesPost(data);
-
+  retrieveProjectsWithPalettes();
 }
 
 const saveNewProject = e => {
@@ -129,24 +128,40 @@ const lockColorSwatch = e => {
   $(e.target).toggleClass('toggleButtonStyle');
 }
 
-const displayProjectsWithPalettes = data => {
-  console.log(data);
+const displayPalette = (id, palettes) => {
+  palettes.forEach(palette => {
+    if (id === palette.project_id) {
+      $(`#${id} ul`).append(`
+    <li class="list_one" style="background-color: ${palette.color_one}"></li>
+    <li class="list_two" style="background-color: ${palette.color_two}"></li>
+    <li class="list_three" style="background-color: ${palette.color_three}"></li>
+    <li class="list_four" style="background-color: ${palette.color_four}"></li>
+    <li class="list_five" style="background-color: ${palette.color_five}"></li>
+      `);
+    };
+  });
+};
+
+const displayProjects = (projects, palettes) => {
+
+  projects.forEach(project => {
+    $('.projects_container').append(`
+    <article id="${project.id}" class="small_palettes">
+    <h2>${project.title}</h2>
+    <ul></ul>
+    </article>
+  `)
+    displayPalette(project.id, palettes)
+  })
 }
 
 const retrieveProjectsWithPalettes = async () => {
-  const projects = await projectsGetAll();
-  const palettes = projects.map(async (project) => {
-    const data = await paletteGetByProjectId(project.id);
+  $('.projects_container').empty();
 
-    const projectsWithPalettes = {
-      title: project.title,
-      id: project.id,
-      palettes: data
-    }
-    return projectsWithPalettes
-  })
-  const response = await Promise.all(palettes);
-  displayProjectsWithPalettes(response);
+  const projects = await projectsGetAll();
+  const palettes = await palettesGetAll();
+
+  displayProjects(projects, palettes);
 }
 
 $(window).on('keypress', generateColorPalette);
@@ -154,5 +169,3 @@ $('.save_palette_form').on('submit', saveColorPalette);
 $('.save_project_form').on('submit', saveNewProject);
 $('.lock_button').on('click', lockColorSwatch);
 $(window).ready(retrieveProjectsWithPalettes());
-
-

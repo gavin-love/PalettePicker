@@ -71,8 +71,8 @@ app.get('/api/v1/projects', (request, response) => {
     })
 })
 
-app.get('/api/v1/palettes/:projectId', (request, response) => {
-  database('palette').where('project_id', request.params.projectId).select()
+app.get('/api/v1/palettes', (request, response) => {
+  database('palette').select()
     .then(projects => {
       return response.status(200).json(projects);
     })
