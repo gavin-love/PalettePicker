@@ -1,8 +1,0 @@
-language: node_js
-node_js:
-  - "iojs"
-  - "10"
-services: 
-  - postgresql
-before_script:
-  - psql -c 'CREATE DATABASE <name>;' -u postgres
