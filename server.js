@@ -99,4 +99,6 @@ app.delete('/api/v1/palettes/:id', (req, resp) => {
 
 app.listen(app.get('port'), () => {
   console.log(`you are listening on port ${app.get('port')}`)
-})
+});
+
+module.exports = app;
