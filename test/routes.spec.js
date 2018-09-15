@@ -7,7 +7,7 @@ const database = require('knex')(environment);
 
 chai.use(chaiHttp);
 
-describe('/api/v1/projects', () => {
+describe('/api/v1/palettes', () => {
   beforeEach(done => {
     database.migrate.rollback()
       .then(() => database.migrate.latest())
@@ -15,7 +15,7 @@ describe('/api/v1/projects', () => {
       .then(() => done());
   });
 
-  it.only('should return a list of palettes when a GET request is made', (done) => {
+  it('should return a list of palettes when a GET request is made', (done) => {
     chai.request(server)
       .get('/api/v1/palettes')
       .end((error, response) => {
@@ -49,4 +49,68 @@ describe('/api/v1/projects', () => {
         done();
       })
   })
+
+  it('should insert a palette when a POST request is made', (done) => {
+    chai.request(server)
+      .post('/api/v1/palettes')
+      .send({
+        title: 'sands',
+        color_one: '#c2b280',
+        color_two: '#c2b280',
+        color_three: '#c2b280',
+        color_four: '#c2b280',
+        color_five: '#c2b280'
+      })
+      .end((error, response) => {
+        should.equal(error, null);
+        response.should.have.status(201);
+        response.should.be.json;
+        response.body.should.be.a('object');
+        response.body.should.have.property('id');
+        response.body.id.should.be.a('number');
+        response.body.id.should.equal(3);
+        done();
+      });
+  });
+
+  it('throws an error if request params are missing when a POST request is made', (done) => {
+    chai.request(server)
+      .post('/api/v1/palettes')
+      .send({
+        color_one: '#c2b280',
+        color_two: '#c2b280',
+        color_three: '#c2b280',
+        color_four: '#c2b280',
+        color_five: '#c2b280'
+      })
+      .end((error, response) => {
+        response.should.have.status(422);
+        response.should.be.json;
+        response.body.should.be.a('object');
+        done();
+      });
+  });
+
+  it('should delete a palette from the project when a DELETE request is made', (done) => {
+    chai.request(server)
+      .delete('/api/v1/palettes/1')
+      .end((error, response) => {
+        should.equal(error, null);
+        response.should.have.status(200);
+        response.should.be.json;
+        response.body.should.be.a('string');
+        done();
+      });
+  });
+
+  it('throws an error if id does not exist when a DELETE request is made', (done) => {
+    chai.request(server)
+      .delete('/api/v1/palettes/2')
+      .end((error, response) => {
+        response.should.have.status(404);
+        response.should.be.json;
+        response.body.should.be.a('string');
+        done();
+      });
+  });
 });

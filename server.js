@@ -14,41 +14,37 @@ app.set('port', process.env.PORT || 3000);
 app.post('/api/v1/projects', (request, response) => {
   const project = request.body;
 
-  for (let requiredParameter of ['title']) {
-    if (!project[requiredParameter]) {
-      return response.status(422).json({
-        error: `Expected format: {title: <string>}. You're missing a "${requiredParameter}" property.`
-      });
-    }
-
-    database('projects').insert(project, 'id')
-      .then(project => {
-        return response.status(201).json({ id: project[0] })
-      })
-      .catch(error => {
-        return response.status(500).json({ error })
-      })
+  if (!project.title) {
+    return response.status(422).json({
+      error: `Expected format: {title: <string>}. You're missing a title property.`
+    });
   }
+
+  database('projects').insert(project, 'id')
+    .then(project => {
+      return response.status(201).json({ id: project[0] })
+    })
+    .catch(error => {
+      return response.status(500).json({ error })
+    })
 })
 
 app.post('/api/v1/palettes', (request, response) => {
   const palette = request.body;
 
-  for (let requiredParameter of ['color_one']) {
-    if (!palette[requiredParameter]) {
-      return response.status(422).json({
-        error: `Expected format: {title: <string>, color_one: <string>, color_two: <string>, color_three: <string>, color_four: <string>, color_five: <string>}. You're missing a "${requiredParameter}" property.`
-      });
-    }
-
-    database('palette').insert(palette, 'id')
-      .then(palette => {
-        return response.status(201).json({ id: palette[0] })
-      })
-      .catch(error => {
-        return response.status(500).json({ error })
-      })
+  if (!palette.title) {
+    return response.status(422).json({
+      error: `Expected format: {title: <string>, color_one: <string>, color_two: <string>, color_three: <string>, color_four: <string>, color_five: <string>}. You're missing a title property.`
+    });
   }
+
+  database('palette').insert(palette, 'id')
+    .then(palette => {
+      return response.status(201).json({ id: palette[0] })
+    })
+    .catch(error => {
+      return response.status(500).json({ error })
+    })
 })
 
 app.get('/api/v1/projects/:projectName', (request, response) => {
