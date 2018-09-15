@@ -84,6 +84,22 @@ const projectGetByName = async (projectName) => {
   }
 }
 
+const remove = (event) => {
+  event.preventDefault();
+
+  const id = $(event.target).parent().find('ul').attr('id');
+
+  fetch(`/api/v1/palettes/${id}`, {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json' },
+  })
+    .then(resp => {
+      return resp.json();
+    });
+
+  $(event.target).parent().find('ul').remove();
+};
+
 const palettesGetAll = async () => {
   const url = "/api/v1/palettes";
 
@@ -109,6 +125,7 @@ const saveColorPalette = async (e) => {
 
   await palettesPost(data);
   retrieveProjectsWithPalettes();
+  $(e.target).children('input').val('');
 }
 
 const saveNewProject = e => {
@@ -117,7 +134,8 @@ const saveNewProject = e => {
   const data = { title: projectName };
 
   $('select').append(`<option value="${projectName}">${projectName}</option>`);
-  projectPost(data)
+  projectPost(data);
+  $(e.target).children('input').val('');
 }
 
 const lockColorSwatch = e => {
@@ -148,7 +166,8 @@ const displayProjects = (projects, palettes) => {
     $('.projects_container').append(`
     <article id="${project.id}" class="small_palettes">
     <h2>${project.title}</h2>
-    <ul></ul>
+    <ul id="${project.id}"></ul>
+    <button>remove palette</button>
     </article>
   `)
     displayPalette(project.id, palettes)
@@ -169,3 +188,4 @@ $('.save_palette_form').on('submit', saveColorPalette);
 $('.save_project_form').on('submit', saveNewProject);
 $('.lock_button').on('click', lockColorSwatch);
 $(window).ready(retrieveProjectsWithPalettes());
+$('.projects_container').on('click', '.small_palettes button', remove);

@@ -81,6 +81,22 @@ app.get('/api/v1/palettes', (request, response) => {
     });
 });
 
+app.delete('/api/v1/palettes/:id', (req, resp) => {
+  const id = req.params.id;
+
+  database('palette').where('project_id', id).select().del()
+    .then(item => {
+      if (item) {
+        return resp.status(200).json('Item was deleted');
+      } else {
+        return resp.status(404).json('Item you are looking for does not exist in the database');
+      };
+    })
+    .catch(error => {
+      return resp.status(500).json({ error });
+    });
+});
+
 app.listen(app.get('port'), () => {
   console.log(`you are listening on port ${app.get('port')}`)
 })
